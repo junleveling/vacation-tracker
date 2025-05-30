@@ -2,63 +2,341 @@
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>假期管理小工具</title>
   <style>
-    body { font-family: sans-serif; padding: 20px; max-width: 600px; margin: auto; }
-    input, select, button { margin: 5px; }
-    table { width: 100%; margin-top: 20px; border-collapse: collapse; }
-    th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
-    .section { margin-bottom: 30px; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', 'Noto Sans CJK TC', 'PingFang TC', sans-serif;
+      background: #f8f9fa;
+      min-height: 100vh;
+      padding: 48px 24px;
+      color: #2c2c2c;
+    }
+    
+    .container {
+      max-width: 880px;
+      margin: 0 auto;
+    }
+    
+    .header {
+      background: white;
+      border-radius: 24px;
+      padding: 48px;
+      margin-bottom: 32px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    }
+    
+    .header h1 {
+      font-size: 28px;
+      font-weight: 400;
+      color: #2c2c2c;
+      letter-spacing: -0.5px;
+    }
+    
+    .section {
+      background: white;
+      border-radius: 24px;
+      padding: 48px;
+      margin-bottom: 24px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    }
+    
+    .section h2 {
+      font-size: 20px;
+      font-weight: 400;
+      color: #2c2c2c;
+      margin-bottom: 32px;
+      letter-spacing: -0.3px;
+    }
+    
+    .form-group {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+    
+    .form-label {
+      font-size: 15px;
+      color: #6c7078;
+      font-weight: 400;
+      min-width: 60px;
+    }
+    
+    .form-input {
+      background: #f8f9fa;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 12px 16px;
+      font-size: 14px;
+      color: #2c2c2c;
+      font-weight: 400;
+      transition: all 0.2s ease;
+      min-width: 120px;
+    }
+    
+    .form-input:focus {
+      outline: none;
+      border-color: #6c7078;
+      background: #ffffff;
+    }
+    
+    .form-select {
+      background: #f8f9fa;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 12px 16px;
+      font-size: 14px;
+      color: #2c2c2c;
+      font-weight: 400;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      min-width: 120px;
+    }
+    
+    .form-select:focus {
+      outline: none;
+      border-color: #6c7078;
+      background: #ffffff;
+    }
+    
+    .button-container {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 24px;
+    }
+    
+    .btn {
+      background: #2c2c2c;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 400;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      letter-spacing: -0.2px;
+    }
+    
+    .btn:hover {
+      background: #1a1a1a;
+      transform: translateY(-1px);
+    }
+    
+    .btn-delete {
+      background: #8e9297;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 400;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    
+    .btn-delete:hover {
+      background: #6c7078;
+    }
+    
+    .balance-display {
+      background: #f8f9fa;
+      border: 1px solid #e5e7eb;
+      border-radius: 16px;
+      padding: 24px;
+      font-size: 16px;
+      color: #2c2c2c;
+      font-weight: 400;
+      line-height: 1.6;
+    }
+    
+    .balance-item {
+      display: inline-block;
+      margin-right: 24px;
+      margin-bottom: 8px;
+    }
+    
+    .balance-label {
+      color: #8e9297;
+      margin-right: 8px;
+    }
+    
+    .balance-value {
+      color: #2c2c2c;
+      font-weight: 500;
+    }
+    
+    .table-container {
+      background: #f8f9fa;
+      border-radius: 16px;
+      padding: 2px;
+      overflow: hidden;
+    }
+    
+    .table {
+      width: 100%;
+      background: white;
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+    }
+    
+    .table th {
+      background: #f8f9fa;
+      color: #6c7078;
+      font-weight: 400;
+      font-size: 14px;
+      padding: 16px 20px;
+      text-align: left;
+      border-bottom: 1px solid #e5e7eb;
+    }
+    
+    .table td {
+      padding: 16px 20px;
+      color: #2c2c2c;
+      font-size: 14px;
+      font-weight: 400;
+      border-bottom: 1px solid #f3f4f6;
+      text-align: left;
+    }
+    
+    .table tr:last-child td {
+      border-bottom: none;
+    }
+    
+    .empty-state {
+      text-align: left;
+      padding: 48px 24px;
+      color: #8e9297;
+      font-size: 15px;
+    }
+    
+    @media (max-width: 768px) {
+      body {
+        padding: 24px 16px;
+      }
+      
+      .header,
+      .section {
+        padding: 32px 24px;
+        border-radius: 20px;
+      }
+      
+      .form-group {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+      }
+      
+      .form-input,
+      .form-select {
+        width: 100%;
+        min-width: auto;
+      }
+      
+      .balance-item {
+        display: block;
+        margin-right: 0;
+      }
+      
+      .table th,
+      .table td {
+        padding: 12px 16px;
+        font-size: 13px;
+      }
+    }
   </style>
 </head>
 <body>
+  <div class="container">
+    <div class="header">
+      <h1>假期管理小工具</h1>
+    </div>
 
-  <h2>🗓 假期管理小工具</h2>
+    <div class="section">
+      <h2>設定初始假期天數</h2>
+      <div class="form-group">
+        <span class="form-label">特休</span>
+        <input id="annualInput" type="number" step="0.5" value="10" class="form-input">
+        <span class="form-label">補休</span>
+        <input id="compInput" type="number" step="0.5" value="2.5" class="form-input">
+        <span class="form-label">病假</span>
+        <input id="sickInput" type="number" step="0.5" value="7" class="form-input">
+      </div>
+      <div class="button-container">
+        <button onclick="setBalances()" class="btn">設定</button>
+      </div>
+    </div>
 
-  <div class="section">
-    <h3>設定初始假期天數</h3>
-    特休: <input id="annualInput" type="number" step="0.5" value="10">
-    補休: <input id="compInput" type="number" step="0.5" value="2.5">
-    病假: <input id="sickInput" type="number" step="0.5" value="7">
-    <button onclick="setBalances()">設定</button>
-  </div>
+    <div class="section">
+      <h2>新增請假紀錄</h2>
+      <div class="form-group">
+        <span class="form-label">假別</span>
+        <select id="typeSelect" class="form-select">
+          <option value="annual">特休</option>
+          <option value="comp">補休</option>
+          <option value="sick">病假</option>
+        </select>
+        <span class="form-label">日期</span>
+        <input id="dateInput" type="date" class="form-input">
+        <span class="form-label">時段</span>
+        <select id="timeSelect" class="form-select">
+          <option value="全天">全天</option>
+          <option value="上午">上午</option>
+          <option value="下午">下午</option>
+        </select>
+      </div>
+      <div class="button-container">
+        <button onclick="addLeave()" class="btn">新增</button>
+      </div>
+    </div>
 
-  <div class="section">
-    <h3>新增請假紀錄</h3>
-    假別:
-    <select id="typeSelect">
-      <option value="annual">特休</option>
-      <option value="comp">補休</option>
-      <option value="sick">病假</option>
-    </select>
-    日期: <input id="dateInput" type="date">
-    時段:
-    <select id="timeSelect">
-      <option value="全天">全天</option>
-      <option value="上午">上午</option>
-      <option value="下午">下午</option>
-    </select>
-    <button onclick="addLeave()">新增</button>
-  </div>
+    <div class="section">
+      <h2>剩餘假期</h2>
+      <div class="balance-display" id="balanceDisplay">
+        <div class="balance-item">
+          <span class="balance-label">特休</span>
+          <span class="balance-value" id="annualBalance">0 天</span>
+        </div>
+        <div class="balance-item">
+          <span class="balance-label">補休</span>
+          <span class="balance-value" id="compBalance">0 天</span>
+        </div>
+        <div class="balance-item">
+          <span class="balance-label">病假</span>
+          <span class="balance-value" id="sickBalance">0 天</span>
+        </div>
+      </div>
+    </div>
 
-  <div class="section">
-    <h3>剩餘假期</h3>
-    <p id="balanceText">請先設定假期</p>
-  </div>
-
-  <div class="section">
-    <h3>請假紀錄</h3>
-    <table id="leaveTable">
-      <thead>
-        <tr>
-          <th>假別</th>
-          <th>日期</th>
-          <th>時段</th>
-          <th>操作</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
+    <div class="section">
+      <h2>請假紀錄</h2>
+      <div class="table-container">
+        <table class="table" id="leaveTable">
+          <thead>
+            <tr>
+              <th>假別</th>
+              <th>日期</th>
+              <th>時段</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody id="leaveTableBody">
+            <tr>
+              <td colspan="4" class="empty-state">尚無請假紀錄</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
   </div>
 
   <script>
@@ -77,16 +355,26 @@
       const type = document.getElementById("typeSelect").value;
       const date = document.getElementById("dateInput").value;
       const time = document.getElementById("timeSelect").value;
-      if (!date) return alert("請選擇日期");
-
+      
+      if (!date) {
+        alert("請選擇日期");
+        return;
+      }
+      
       const hours = time === "全天" ? 1 : 0.5;
+      
       if (balances[type] < hours) {
         alert("假期不足！");
         return;
       }
-
+      
       balances[type] -= hours;
       leaves.push({ type, date, time, hours });
+      
+      // 清空表單
+      document.getElementById("dateInput").value = "";
+      document.getElementById("timeSelect").value = "全天";
+      
       updateUI();
     }
 
@@ -98,27 +386,42 @@
     }
 
     function updateUI() {
-      document.getElementById("balanceText").innerText = 
-        `特休：${balances.annual.toFixed(1)} 天｜補休：${balances.comp.toFixed(1)} 天｜病假：${balances.sick.toFixed(1)} 天`;
-
-      const tbody = document.getElementById("leaveTable").querySelector("tbody");
-      tbody.innerHTML = "";
-      leaves.forEach((leave, i) => {
-        const row = document.createElement("tr");
-        row.innerHTML = `
-          <td>${mapLabel(leave.type)}</td>
-          <td>${leave.date}</td>
-          <td>${leave.time}</td>
-          <td><button onclick="deleteLeave(${i})">刪除</button></td>
-        `;
-        tbody.appendChild(row);
-      });
+      // 更新餘額顯示
+      document.getElementById("annualBalance").textContent = `${balances.annual.toFixed(1)} 天`;
+      document.getElementById("compBalance").textContent = `${balances.comp.toFixed(1)} 天`;
+      document.getElementById("sickBalance").textContent = `${balances.sick.toFixed(1)} 天`;
+      
+      // 更新表格
+      const tbody = document.getElementById("leaveTableBody");
+      
+      if (leaves.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="4" class="empty-state">尚無請假紀錄</td></tr>';
+      } else {
+        tbody.innerHTML = "";
+        leaves.forEach((leave, i) => {
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td>${mapLabel(leave.type)}</td>
+            <td>${formatDate(leave.date)}</td>
+            <td>${leave.time}</td>
+            <td><button onclick="deleteLeave(${i})" class="btn-delete">刪除</button></td>
+          `;
+          tbody.appendChild(row);
+        });
+      }
     }
 
     function mapLabel(key) {
       return { annual: "特休", comp: "補休", sick: "病假" }[key];
     }
-  </script>
 
+    function formatDate(dateString) {
+      const date = new Date(dateString);
+      return `${date.getFullYear()}/${String(date.getMonth() + 1).padStart(2, '0')}/${String(date.getDate()).padStart(2, '0')}`;
+    }
+
+    // 初始化
+    setBalances();
+  </script>
 </body>
 </html>
