@@ -184,7 +184,7 @@
     .table {
       width: 100%;
       background: white;
-      border-radius: 14px;
+      border-radius: 16px;
       overflow: hidden;
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
     }
@@ -197,6 +197,14 @@
       padding: 16px 20px;
       text-align: left;
       border-bottom: 1px solid #e5e7eb;
+    }
+    
+    .table th:first-child {
+      border-top-left-radius: 16px;
+    }
+    
+    .table th:last-child {
+      border-top-right-radius: 16px;
     }
     
     .table td {
@@ -212,11 +220,33 @@
       border-bottom: none;
     }
     
-    .empty-state {
-      text-align: left;
-      padding: 48px 24px;
-      color: #8e9297;
-      font-size: 15px;
+    .table tr:last-child td:first-child {
+      border-bottom-left-radius: 16px;
+    }
+    
+    .table tr:last-child td:last-child {
+      border-bottom-right-radius: 16px;
+    }
+    
+    .leave-type-badge {
+      display: inline-block;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 400;
+      color: #2c2c2c;
+    }
+    
+    .leave-type-comp {
+      background-color: #B4E2EE;
+    }
+    
+    .leave-type-annual {
+      background-color: #FFE896;
+    }
+    
+    .leave-type-sick {
+      background-color: #C9F1CE;
     }
     
     @media (max-width: 768px) {
@@ -379,6 +409,7 @@
     }
 
     function deleteLeave(index) {
+      // 由於陣列已排序，直接使用顯示的索引即可
       const leave = leaves[index];
       balances[leave.type] += leave.hours;
       leaves.splice(index, 1);
@@ -391,6 +422,9 @@
       document.getElementById("compBalance").textContent = `${balances.comp.toFixed(1)} 天`;
       document.getElementById("sickBalance").textContent = `${balances.sick.toFixed(1)} 天`;
       
+      // 依據日期排序請假紀錄（最舊日期在上，最新日期在下）
+      leaves.sort((a, b) => new Date(a.date) - new Date(b.date));
+      
       // 更新表格
       const tbody = document.getElementById("leaveTableBody");
       
@@ -401,7 +435,7 @@
         leaves.forEach((leave, i) => {
           const row = document.createElement("tr");
           row.innerHTML = `
-            <td>${mapLabel(leave.type)}</td>
+            <td>${getLeaveTypeBadge(leave.type)}</td>
             <td>${formatDate(leave.date)}</td>
             <td>${leave.time}</td>
             <td><button onclick="deleteLeave(${i})" class="btn-delete">刪除</button></td>
@@ -409,6 +443,17 @@
           tbody.appendChild(row);
         });
       }
+    }
+
+    function getLeaveTypeBadge(type) {
+      const typeMap = {
+        annual: { label: "特休", class: "leave-type-annual" },
+        comp: { label: "補休", class: "leave-type-comp" },
+        sick: { label: "病假", class: "leave-type-sick" }
+      };
+      
+      const typeInfo = typeMap[type];
+      return `<span class="leave-type-badge ${typeInfo.class}">${typeInfo.label}</span>`;
     }
 
     function mapLabel(key) {
